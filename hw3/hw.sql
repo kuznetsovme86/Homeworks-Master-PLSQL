@@ -1,56 +1,60 @@
 /*
-Автор: Кузнецов Дмитрий Павлович
-Описание скрипта: API для сущностей “Платеж” и “Детали платежа”
+Автор: Кузнецов Дмитрий Павлович.
+Описание скрипта: API для сущностей “Платеж” и “Детали платежа”.
 */
 
---Добавьте переменные и константы в ваши анонимные блоки:
---для “сообщений” используйте переменные;
---для “причин” - отдельные переменные;
---для “статусов” - константы.
-
---Создание клиента
+--Создание платежа.
 declare
-  v_message varchar2(200):='Клиент создан. ';
-  c_active constant number:= 1;
-  c_not_blocked constant number:=0;
+  v_payment_action_message varchar2(300 char):= 'Платеж создан. '; 
+  c_status_payment_success_creation constant number(1):=0;
 begin
-  dbms_output.put_line(v_message|| 'Статус:' || c_active || '. Блокировка: '||c_not_blocked);
+  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_creation||'.');
 end;
 /
 
---Блокировка клиента
+--Сброс платежа в "ошибочный статус".
 declare
-  v_message varchar2(200):='Клиент заблокирован. ';
-  c_blocked constant number:= 1;
-  c_reason varchar2(200):=' подозрительный перевод.';
+  v_payment_action_message varchar2(300 char):= 'Сброс платежа в "ошибочный статус" с указанием причины. '; 
+  c_status_payment_reset_error constant number(1):=2;
+  v_reason_message varchar2(300 char):= 'Причина: недостаточно средств.';
 begin
-  dbms_output.put_line(v_message || 'Блокировка: '|| c_blocked || '. Причина:' ||c_reason);
+  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_reset_error|| '. '||v_reason_message);
 end;
 /
 
---Разблокировка клиента
+--Отмена платежа.
 declare
-  v_message varchar2(200):='Клиент разблокирован. ';
-  c_not_blocked constant number:=0;
+  v_payment_action_message varchar2(300 char):= 'Отмена платежа с указанием причины. '; 
+  c_status_payment_cancel constant number(1):=3;
+  v_reason_message varchar2(300 char):= 'Причина: ошибка пользователя.';
 begin
-  dbms_output.put_line(v_message||'Блокировка: '||c_not_blocked);
+  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_cancel|| '. '||v_reason_message);
 end;
 /
 
---Клиентские данные вставлены или обновлены
+--Успешное завершение платежа.
 declare
-  v_action varchar2(200) :='Клиентские данные вставлены или обновлены';
-  c_criteria constant varchar2(200) :='  по списку id поле/значение.';
+  v_payment_action_message varchar2(300 char):= 'Успешное завершение платежа. '; 
+  c_status_payment_success_end constant number(1):=1;
 begin
-  dbms_output.put_line(v_action||c_criteria);
+  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_end||'.');
 end;
 /
 
---Клиентские данные удалены
+--Данные платежа добавлены или обновлены.
 declare
-  v_action varchar2(200) :='Клиентские данные удалены';
-  c_criteria constant varchar2(200) :='  по списку id поле/значение.';
+  v_data_payment_action_message varchar2(300 char):= 'Данные платежа добавлены или обновлены '; 
+  c_payment_param_list_id_value constant varchar2(300 char):='по списку id_поля/значение.';
 begin
-  dbms_output.put_line(v_action||c_criteria);
+  dbms_output.put_line(v_data_payment_action_message||c_payment_param_list_id_value);
+end;
+/
+
+--Детали платежа удалены.
+declare
+  v_data_payment_action_message varchar2(300 char):= 'Детали платежа удалены '; 
+  c_payment_param_list_id constant varchar2(300 char):='по списку id_полей.';
+begin
+  dbms_output.put_line(v_data_payment_action_message||c_payment_param_list_id);
 end;
 /
