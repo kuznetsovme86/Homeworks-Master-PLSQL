@@ -1,59 +1,59 @@
-/*
-Автор: Кузнецов Дмитрий Павлович.
-Описание скрипта: API для сущностей “Платеж” и “Детали платежа”.
+п»ї/*
+РђРІС‚РѕСЂ: РљСѓР·РЅРµС†РѕРІ Р”РјРёС‚СЂРёР№ РџР°РІР»РѕРІРёС‡.
+РћРїРёСЃР°РЅРёРµ СЃРєСЂРёРїС‚Р°: API РґР»СЏ СЃСѓС‰РЅРѕСЃС‚РµР№ вЂњРџР»Р°С‚РµР¶вЂќ Рё вЂњР”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р°вЂќ.
 */
 
---Создание платежа.
+--РЎРѕР·РґР°РЅРёРµ РїР»Р°С‚РµР¶Р°.
 declare
-  v_payment_action_message varchar2(300 char):= 'Платеж создан. '; 
+  v_payment_action_message varchar2(300 char):= 'РџР»Р°С‚РµР¶ СЃРѕР·РґР°РЅ. '; 
   c_status_payment_success_creation constant number(1):=0;
 begin
-  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_creation||'.');
+  dbms_output.put_line(v_payment_action_message||'РЎС‚Р°С‚СѓСЃ: '||c_status_payment_success_creation||'.');
 end;
 /
 
---Сброс платежа в "ошибочный статус".
+--РЎР±СЂРѕСЃ РїР»Р°С‚РµР¶Р° РІ "РѕС€РёР±РѕС‡РЅС‹Р№ СЃС‚Р°С‚СѓСЃ".
 declare
-  v_payment_action_message varchar2(300 char):= 'Сброс платежа в "ошибочный статус" с указанием причины. '; 
+  v_payment_action_message varchar2(300 char):= 'РЎР±СЂРѕСЃ РїР»Р°С‚РµР¶Р° РІ "РѕС€РёР±РѕС‡РЅС‹Р№ СЃС‚Р°С‚СѓСЃ" СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹. '; 
   c_status_payment_reset_error constant number(1):=2;
-  v_reason_message varchar2(300 char):= 'Причина: недостаточно средств.';
+  v_reason_message varchar2(300 char):= 'РџСЂРёС‡РёРЅР°: РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ.';
 begin
-  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_reset_error|| '. '||v_reason_message);
+  dbms_output.put_line(v_payment_action_message||'РЎС‚Р°С‚СѓСЃ: '||c_status_payment_reset_error|| '. '||v_reason_message);
 end;
 /
 
---Отмена платежа.
+--РћС‚РјРµРЅР° РїР»Р°С‚РµР¶Р°.
 declare
-  v_payment_action_message varchar2(300 char):= 'Отмена платежа с указанием причины. '; 
+  v_payment_action_message varchar2(300 char):= 'РћС‚РјРµРЅР° РїР»Р°С‚РµР¶Р° СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹. '; 
   c_status_payment_cancel constant number(1):=3;
-  v_reason_message varchar2(300 char):= 'Причина: ошибка пользователя.';
+  v_reason_message varchar2(300 char):= 'РџСЂРёС‡РёРЅР°: РѕС€РёР±РєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.';
 begin
-  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_cancel|| '. '||v_reason_message);
+  dbms_output.put_line(v_payment_action_message||'РЎС‚Р°С‚СѓСЃ: '||c_status_payment_cancel|| '. '||v_reason_message);
 end;
 /
 
---Успешное завершение платежа.
+--РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїР»Р°С‚РµР¶Р°.
 declare
-  v_payment_action_message varchar2(300 char):= 'Успешное завершение платежа. '; 
+  v_payment_action_message varchar2(300 char):= 'РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїР»Р°С‚РµР¶Р°. '; 
   c_status_payment_success_end constant number(1):=1;
 begin
-  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_end||'.');
+  dbms_output.put_line(v_payment_action_message||'РЎС‚Р°С‚СѓСЃ: '||c_status_payment_success_end||'.');
 end;
 /
 
---Данные платежа добавлены или обновлены.
+--Р”Р°РЅРЅС‹Рµ РїР»Р°С‚РµР¶Р° РґРѕР±Р°РІР»РµРЅС‹ РёР»Рё РѕР±РЅРѕРІР»РµРЅС‹.
 declare
-  v_data_payment_action_message varchar2(300 char):= 'Данные платежа добавлены или обновлены '; 
-  c_payment_param_list_id_value constant varchar2(300 char):='по списку id_поля/значение.';
+  v_data_payment_action_message varchar2(300 char):= 'Р”Р°РЅРЅС‹Рµ РїР»Р°С‚РµР¶Р° РґРѕР±Р°РІР»РµРЅС‹ РёР»Рё РѕР±РЅРѕРІР»РµРЅС‹ '; 
+  c_payment_param_list_id_value constant varchar2(300 char):='РїРѕ СЃРїРёСЃРєСѓ id_РїРѕР»СЏ/Р·РЅР°С‡РµРЅРёРµ.';
 begin
   dbms_output.put_line(v_data_payment_action_message||c_payment_param_list_id_value);
 end;
 /
 
---Детали платежа удалены.
+--Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р° СѓРґР°Р»РµРЅС‹.
 declare
-  v_data_payment_action_message varchar2(300 char):= 'Детали платежа удалены '; 
-  c_payment_param_list_id constant varchar2(300 char):='по списку id_полей.';
+  v_data_payment_action_message varchar2(300 char):= 'Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р° СѓРґР°Р»РµРЅС‹ '; 
+  c_payment_param_list_id constant varchar2(300 char):='РїРѕ СЃРїРёСЃРєСѓ id_РїРѕР»РµР№.';
 begin
   dbms_output.put_line(v_data_payment_action_message||c_payment_param_list_id);
 end;
