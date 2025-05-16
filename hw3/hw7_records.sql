@@ -29,13 +29,13 @@ declare
     dbms_output.put_line('payment_id='||p_rec.payment_id||', payment_id='||to_char(p_rec.create_dtime,'dd.mm.yyyy hh24:mi:ss')||', amount='||p_rec.amount);
     end;
     
-    procedure print_payment_null_check (p_rec t_payment_type)
+    /*procedure print_payment_null_check (p_rec t_payment_type)
     is
     begin
     dbms_output.put_line('payment_id='||nvl2(p_rec.payment_id,'It’s not null','It’s null')||
                          ', create_dtime='||nvl2(p_rec.create_dtime,'It’s not null','It’s null')||
                          ', amount='||nvl2(p_rec.amount,'It’s not null','It’s null'));
-    end;
+    end;*/
       
 begin
     v_payment_from_terminal.payment_id :=1;
@@ -44,11 +44,17 @@ begin
     print_payment_values(v_payment_from_terminal);
     print_payment_values(v_payment_from_partners);
     
-    v_payment_from_terminal.payment_id :=null;
-    v_payment_from_partners.payment_id :=null;
+    v_payment_from_partners :=null;
+    print_payment_values(v_payment_from_partners);
     
-    print_payment_null_check(v_payment_from_terminal);
-    print_payment_null_check(v_payment_from_partners);   
+    --напечатает It’s not null
+    case 
+      when v_payment_from_partners.payment_id is null and
+           v_payment_from_partners.create_dtime is null and
+           v_payment_from_partners.amount is null
+      then dbms_output.put_line('It’s null');
+      else dbms_output.put_line('It’s not null');
+    end case;   
 end;
 /
 
