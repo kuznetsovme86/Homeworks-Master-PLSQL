@@ -1,84 +1,91 @@
-п»ї/*
-РђРІС‚РѕСЂ: РљСѓР·РЅРµС†РѕРІ Р”РјРёС‚СЂРёР№ РџР°РІР»РѕРІРёС‡.
-РћРїРёСЃР°РЅРёРµ СЃРєСЂРёРїС‚Р°: API РґР»СЏ СЃСѓС‰РЅРѕСЃС‚РµР№ вЂњРџР»Р°С‚РµР¶вЂќ Рё вЂњР”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р°вЂќ.
+/*
+Автор: Кузнецов Дмитрий Павлович.
+Описание скрипта: API для сущностей “Платеж” и “Детали платежа”.
 */
 
---РЎРѕР·РґР°РЅРёРµ РїР»Р°С‚РµР¶Р°.
+--Создание платежа.
 declare
-  v_payment_action_message varchar2(200 char):= 'РџР»Р°С‚РµР¶ СЃРѕР·РґР°РЅ. '; 
+  v_payment_action_message varchar2(200 char):= 'Платеж создан. '; 
   c_status_payment_success_creation payment.status%type:=0;
   v_current_dtime date:= sysdate;
   v_payment_id  payment.payment_id%type := 1;
+  v_payment_detail_data t_payment_detail_array := t_payment_detail_array( t_payment_detail(1,'Миобильное приложение банка X.')
+                                                                        , t_payment_detail(2,'217.158.3.5')
+                                                                        , t_payment_detail(3,'Оплата за домашний интернет за май.')
+                                                                        );     
 begin
   dbms_output.put_line('v_payment_id='||v_payment_id);
-  dbms_output.put_line(v_payment_action_message||'РЎС‚Р°С‚СѓСЃ: '||c_status_payment_success_creation||'.');
+  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_creation||'.');
   dbms_output.put_line(to_char(v_current_dtime,'dd.mm.yyyy hh24'));
 end;
 /
 
---РЎР±СЂРѕСЃ РїР»Р°С‚РµР¶Р° РІ "РѕС€РёР±РѕС‡РЅС‹Р№ СЃС‚Р°С‚СѓСЃ".
+--Сброс платежа в "ошибочный статус".
 declare
-  v_payment_action_message varchar2(200 char):= 'РЎР±СЂРѕСЃ РїР»Р°С‚РµР¶Р° РІ "РѕС€РёР±РѕС‡РЅС‹Р№ СЃС‚Р°С‚СѓСЃ" СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹. '; 
+  v_payment_action_message varchar2(200 char):= 'Сброс платежа в "ошибочный статус" с указанием причины. '; 
   c_status_payment_reset_error constant payment.status%type:=2;
-  v_reason_message payment.status_change_reason%type:= 'РџСЂРёС‡РёРЅР°: РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ.';
+  v_reason_message payment.status_change_reason%type:= 'Причина: недостаточно средств.';
   v_current_dtime date:= sysdate;
   v_payment_id  payment.payment_id%type := 105;
 begin
   if v_payment_id is not null then
     if v_reason_message is not null then
-        dbms_output.put_line(v_payment_action_message||'РЎС‚Р°С‚СѓСЃ: '||c_status_payment_reset_error|| '. '||v_reason_message);
+        dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_reset_error|| '. '||v_reason_message);
         dbms_output.put_line(to_char(v_current_dtime,'dd.mm.yyyy hh24:mi:ss'));
         dbms_output.put_line('v_payment_id='||v_payment_id);
-    else dbms_output.put_line('РџСЂРёС‡РёРЅР° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№.');
+    else dbms_output.put_line('Причина не может быть пустой.');
     end if;
-  else dbms_output.put_line('ID РѕР±СЉРµРєС‚Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј');
+  else dbms_output.put_line('ID объекта не может быть пустым');
   end if;
 end;
 /
 
---РћС‚РјРµРЅР° РїР»Р°С‚РµР¶Р°.
+--Отмена платежа.
 declare
-  v_payment_action_message varchar2(200 char):= 'РћС‚РјРµРЅР° РїР»Р°С‚РµР¶Р° СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹. '; 
+  v_payment_action_message varchar2(200 char):= 'Отмена платежа с указанием причины. '; 
   c_status_payment_cancel constant payment.status%type:=3;
-  v_reason_message payment.status_change_reason%type:= 'РџСЂРёС‡РёРЅР°: РѕС€РёР±РєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.';
+  v_reason_message payment.status_change_reason%type:= 'Причина: ошибка пользователя.';
   v_current_dtime date:= sysdate;
   v_payment_id  payment.payment_id%type := 777;
 begin
-  if v_payment_id is null then dbms_output.put_line('ID РѕР±СЉРµРєС‚Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј');
-  elsif v_reason_message is null then dbms_output.put_line('РџСЂРёС‡РёРЅР° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№.');
+  if v_payment_id is null then dbms_output.put_line('ID объекта не может быть пустым');
+  elsif v_reason_message is null then dbms_output.put_line('Причина не может быть пустой.');
   else 
-  dbms_output.put_line(v_payment_action_message||'РЎС‚Р°С‚СѓСЃ: '||c_status_payment_cancel|| '. '||v_reason_message);
+  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_cancel|| '. '||v_reason_message);
   dbms_output.put_line(to_char(v_current_dtime,'day-mon-yy'));
   dbms_output.put_line('v_payment_id='||v_payment_id);
   end if;
 end;
 /
 
---РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїР»Р°С‚РµР¶Р°.
+--Успешное завершение платежа.
 declare
-  v_payment_action_message varchar2(200 char):= 'РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїР»Р°С‚РµР¶Р°. '; 
+  v_payment_action_message varchar2(200 char):= 'Успешное завершение платежа. '; 
   c_status_payment_success_end constant payment.status%type:=1;
   v_current_dtime date:= sysdate;
   v_payment_id  payment.payment_id%type := 55;
 begin
   if v_payment_id is not null then
-  dbms_output.put_line(v_payment_action_message||'РЎС‚Р°С‚СѓСЃ: '||c_status_payment_success_end||'.');
+  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_end||'.');
   dbms_output.put_line(to_char(v_current_dtime,'WW-Q-yy:hh24:mi->ss'));
   dbms_output.put_line('v_payment_id='||v_payment_id);
-  else dbms_output.put_line('ID РѕР±СЉРµРєС‚Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј');
+  else dbms_output.put_line('ID объекта не может быть пустым');
   end if;
 end;
 /
 
---Р”Р°РЅРЅС‹Рµ РїР»Р°С‚РµР¶Р° РґРѕР±Р°РІР»РµРЅС‹ РёР»Рё РѕР±РЅРѕРІР»РµРЅС‹.
+--Данные платежа добавлены или обновлены.
 declare
-  v_data_payment_action_message varchar2(200 char):= 'Р”Р°РЅРЅС‹Рµ РїР»Р°С‚РµР¶Р° РґРѕР±Р°РІР»РµРЅС‹ РёР»Рё РѕР±РЅРѕРІР»РµРЅС‹ '; 
-  c_payment_param_list_id_value constant varchar2(200 char):='РїРѕ СЃРїРёСЃРєСѓ id_РїРѕР»СЏ/Р·РЅР°С‡РµРЅРёРµ.';
+  v_data_payment_action_message varchar2(200 char):= 'Данные платежа добавлены или обновлены '; 
+  c_payment_param_list_id_value constant varchar2(200 char):='по списку id_поля/значение.';
   v_current_dts timestamp:= systimestamp;
   v_payment_id  payment.payment_id%type := 55;
+  v_payment_detail_data t_payment_detail_array := t_payment_detail_array( t_payment_detail(1,'Миобильное приложение банка X.')
+                                                                        , t_payment_detail(3,'Оплата за домашний интернет.')
+                                                                        );
 begin
   case v_payment_id
-    when null then dbms_output.put_line('ID РѕР±СЉРµРєС‚Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј');
+    when null then dbms_output.put_line('ID объекта не может быть пустым');
   else 
     dbms_output.put_line(v_data_payment_action_message||c_payment_param_list_id_value);
     dbms_output.put_line(to_char(v_current_dts,'dd.mm.yyyy hh24:mi:ss.ff6'));
@@ -87,19 +94,20 @@ begin
 end;
 /
 
---Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р° СѓРґР°Р»РµРЅС‹.
+--Детали платежа удалены.
 declare
-  v_data_payment_action_message varchar2(200 char):= 'Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р° СѓРґР°Р»РµРЅС‹ '; 
-  c_payment_param_list_id constant varchar2(200 char):='РїРѕ СЃРїРёСЃРєСѓ id_РїРѕР»РµР№.';
+  v_data_payment_action_message varchar2(200 char):= 'Детали платежа удалены '; 
+  c_payment_param_list_id constant varchar2(200 char):='по списку id_полей.';
   v_current_dts timestamp:= systimestamp;
-  v_payment_id  payment.payment_id%type;
+  v_payment_id  payment.payment_id%type:=56;
+  v_deleted_payment_fields t_number_array := t_number_array(1,4);
 begin
   case 
   when v_payment_id is not null then 
     dbms_output.put_line(v_data_payment_action_message||c_payment_param_list_id);
     dbms_output.put_line(to_char(v_current_dts,'dd.mm.yyyy hh24:mi:ss.ff9'));
     dbms_output.put_line('v_payment_id='||v_payment_id);
-  else dbms_output.put_line('ID РѕР±СЉРµРєС‚Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј');
+  else dbms_output.put_line('ID объекта не может быть пустым');
   end case;
 end;
 /
