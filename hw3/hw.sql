@@ -1,6 +1,6 @@
-/*
+﻿/*
 Автор: Кузнецов Дмитрий Павлович.
-Описание скрипта: API для сущностей “Платеж” и “Детали платежа”. 
+Описание скрипта: API для сущностей “Платеж” и “Детали платежа”.
 */
 
 --Создание платежа.
@@ -14,6 +14,21 @@ declare
                                                                         , t_payment_detail(3,'Оплата за домашний интернет за май.')
                                                                         );     
 begin
+  if v_payment_detail_data is not empty then
+    for i in v_payment_detail_data.first .. v_payment_detail_data.last
+    loop
+        if v_payment_detail_data(i).field_id is null then 
+            dbms_output.put_line('ID поля не может быть пустым');
+        end if;
+        if v_payment_detail_data(i).field_value is null then
+            dbms_output.put_line('Значение в поле не может быть пустым');
+        end if;
+        dbms_output.put_line ('Field_id: ' || v_payment_detail_data(i).field_id || '. Field_value: ' || v_payment_detail_data(i).field_value);
+    end loop;
+    
+  else 
+    dbms_output.put_line('Коллекция не содержит данных');
+  end if;
   dbms_output.put_line('v_payment_id='||v_payment_id);
   dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_creation||'.');
   dbms_output.put_line(to_char(v_current_dtime,'dd.mm.yyyy hh24'));
@@ -84,6 +99,22 @@ declare
                                                                         , t_payment_detail(3,'Оплата за домашний интернет.')
                                                                         );
 begin
+  if v_payment_detail_data is not empty then
+    for i in v_payment_detail_data.first .. v_payment_detail_data.last
+    loop
+        if v_payment_detail_data(i).field_id is null then 
+            dbms_output.put_line('ID поля не может быть пустым');
+        end if;
+        if v_payment_detail_data(i).field_value is null then
+            dbms_output.put_line('Значение в поле не может быть пустым');
+        end if;
+        dbms_output.put_line ('Field_id: ' || v_payment_detail_data(i).field_id || '. Field_value: ' || v_payment_detail_data(i).field_value);
+    end loop;
+    
+  else 
+    dbms_output.put_line('Коллекция не содержит данных');
+  end if;
+  
   case v_payment_id
     when null then dbms_output.put_line('ID объекта не может быть пустым');
   else 
@@ -107,6 +138,11 @@ begin
     dbms_output.put_line(v_data_payment_action_message||c_payment_param_list_id);
     dbms_output.put_line(to_char(v_current_dts,'dd.mm.yyyy hh24:mi:ss.ff9'));
     dbms_output.put_line('v_payment_id='||v_payment_id);
+    if v_deleted_payment_fields is empty  then
+        dbms_output.put_line ('Коллекция не содержит данных.');
+    else
+        dbms_output.put_line ('Количество удаляемых полей:'||v_deleted_payment_fields.count());
+    end if;  
   else dbms_output.put_line('ID объекта не может быть пустым');
   end case;
 end;
