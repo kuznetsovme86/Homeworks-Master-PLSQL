@@ -9,7 +9,7 @@ declare
     c_status_payment_success_creation payment.status%type:=0;
   
     v_payment_id payment.payment_id%type;
-    v_create_dtime timestamp := systimestamp;
+    v_create_dtime payment.create_dtime%type := systimestamp;
     v_summa payment.summa%type := 100;
     v_currency_id payment.currency_id%type := 840;
     v_from_client_id payment.from_client_id%type := 1;
@@ -64,7 +64,7 @@ declare
   c_status_payment_success_creation payment.status%type:=0;
   c_status_payment_reset_error constant payment.status%type:=2;
   v_reason_message payment.status_change_reason%type:= 'Причина: недостаточно средств.';
-  v_current_dtime timestamp := systimestamp;
+  v_current_dtime payment.create_dtime%type := systimestamp;
   v_payment_id  payment.payment_id%type := 105;
   v_payment_exist number(5):=0;
 begin
@@ -74,13 +74,7 @@ begin
         dbms_output.put_line(to_char(v_current_dtime,'dd.mm.yyyy hh24:mi:ss'));
         dbms_output.put_line('v_payment_id='||v_payment_id);
         
-        select count(1) into v_payment_exist
-        from payment p
-        where p.payment_id = v_payment_id
-        and p.status = c_status_payment_success_creation;
-        
-        if v_payment_exist = 1
-        then
+
             update payment p
             set
                 p.status = c_status_payment_reset_error,
@@ -88,7 +82,7 @@ begin
             where
                 p.payment_id = v_payment_id
             and p.status = c_status_payment_success_creation;
-        else
+        if sql%rowcount = 0 then
             dbms_output.put_line('Невозможно выполнить операцию.');
         end if;
     else dbms_output.put_line('Причина не может быть пустой.');
@@ -104,7 +98,7 @@ declare
   c_status_payment_success_creation payment.status%type:=0;
   c_status_payment_cancel constant payment.status%type:=3;
   v_reason_message payment.status_change_reason%type:= 'Причина: ошибка пользователя.';
-  v_current_dtime timestamp := systimestamp;
+  v_current_dtime payment.create_dtime%type := systimestamp;
   v_payment_id  payment.payment_id%type := 777;
   v_payment_exist number(5):=0;
 begin
@@ -115,13 +109,7 @@ begin
     dbms_output.put_line(to_char(v_current_dtime,'day-mon-yy'));
     dbms_output.put_line('v_payment_id='||v_payment_id);
     
-    select count(1) into v_payment_exist
-    from payment p
-    where p.payment_id = v_payment_id
-    and p.status = c_status_payment_success_creation;
-        
-    if v_payment_exist = 1
-    then
+
         update payment p
         set
             p.status = c_status_payment_cancel,
@@ -129,7 +117,7 @@ begin
         where
             p.payment_id = v_payment_id
             and p.status = c_status_payment_success_creation;
-        else
+        if sql%rowcount = 0 then
             dbms_output.put_line('Невозможно выполнить операцию.');
         end if;
   end if;
@@ -141,32 +129,24 @@ declare
   v_payment_action_message varchar2(200 char):= 'Успешное завершение платежа. '; 
   c_status_payment_success_creation payment.status%type:=0;
   c_status_payment_success_end constant payment.status%type:=1;
-  v_current_dtime timestamp := systimestamp;
+  v_current_dtime payment.create_dtime%type := systimestamp;
   v_payment_id  payment.payment_id%type := 55;
   v_payment_exist number(5):=0;
 begin
   if v_payment_id is not null then
-  dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_end||'.');
-  dbms_output.put_line(to_char(v_current_dtime,'WW-Q-yy:hh24:mi->ss'));
-  dbms_output.put_line('v_payment_id='||v_payment_id);
-  
-    select count(1) into v_payment_exist
-    from payment p
-    where p.payment_id = v_payment_id
-    and p.status = c_status_payment_success_creation;
-        
-    if v_payment_exist = 1
-    then
-        update payment p
+    dbms_output.put_line(v_payment_action_message||'Статус: '||c_status_payment_success_end||'.');
+    dbms_output.put_line(to_char(v_current_dtime,'WW-Q-yy:hh24:mi->ss'));
+    dbms_output.put_line('v_payment_id='||v_payment_id);
+    update payment p
         set
             p.status = c_status_payment_success_end,
             p.status_change_reason = null
         where
             p.payment_id = v_payment_id
             and p.status = c_status_payment_success_creation;
-        else
-            dbms_output.put_line('Невозможно выполнить операцию.');
-        end if;
+    if sql%rowcount = 0 then
+        dbms_output.put_line('Невозможно выполнить операцию.');
+    end if;
   else dbms_output.put_line('ID объекта не может быть пустым');
   end if;
 end;
@@ -176,7 +156,7 @@ end;
 declare
   v_data_payment_action_message varchar2(200 char):= 'Данные платежа добавлены или обновлены '; 
   c_payment_param_list_id_value constant varchar2(200 char):='по списку id_поля/значение.';
-  v_current_dts timestamp:= systimestamp;
+  v_current_dts payment.create_dtime%type:= systimestamp;
   v_payment_id  payment.payment_id%type := 4;
   v_payment_detail_data t_payment_detail_array := t_payment_detail_array( t_payment_detail(1,'Миобильное приложение банка X.')
                                                                         , t_payment_detail(3,'Оплата за домашний интернет.')
@@ -224,7 +204,7 @@ end;
 declare
   v_data_payment_action_message varchar2(200 char):= 'Детали платежа удалены '; 
   c_payment_param_list_id constant varchar2(200 char):='по списку id_полей.';
-  v_current_dts timestamp:= systimestamp;
+  v_current_dts payment.create_dtime%type:= systimestamp;
   v_payment_id  payment.payment_id%type:=56;
   v_deleted_payment_fields t_number_array := t_number_array(1,4);
 begin
