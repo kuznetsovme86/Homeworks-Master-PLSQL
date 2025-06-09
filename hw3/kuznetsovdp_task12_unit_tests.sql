@@ -30,6 +30,7 @@ begin
                                 , p_payment_to_client_id   => v_payment_to_client_id
                                 , p_payment_sum            => v_payment_sum
                                 , p_currency_id            => v_currency_id
+                                , p_payment_date           => systimestamp
                                 , p_payment_detail_data    => v_payment_detail_data
                                 );
   dbms_output.put_line('v_payment_id: '|| v_payment_id);

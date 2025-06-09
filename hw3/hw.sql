@@ -8,13 +8,13 @@ create or replace function create_payment( p_payment_from_client_id   payment.fr
                                          , p_payment_to_client_id     payment.to_client_id%type
                                          , p_payment_sum              payment.summa%type
                                          , p_currency_id              payment.currency_id%type
+                                         , p_payment_date             payment.create_dtime%type
                                          , p_payment_detail_data      t_payment_detail_array
                                          )
 return payment.payment_id%type
 is
   c_payment_create_discription  constant varchar2(200 char) := 'Платеж создан';
   с_payment_create_status       constant payment.status%type := 0;
-  v_current_dtime               date := sysdate;
   v_payment_id                  payment.payment_id%type;
 begin
  if p_payment_detail_data is not empty then
@@ -35,7 +35,7 @@ begin
   insert into payment
     (payment_id, create_dtime, summa, currency_id, from_client_id, to_client_id, status)
   values
-    (payment_seq.nextval, v_current_dtime, p_payment_sum, p_currency_id, p_payment_from_client_id, p_payment_to_client_id, с_payment_create_status)
+    (payment_seq.nextval, p_payment_date, p_payment_sum, p_currency_id, p_payment_from_client_id, p_payment_to_client_id, с_payment_create_status)
   returning payment_id into v_payment_id;
 
   insert into payment_detail
@@ -44,7 +44,7 @@ begin
   from table(p_payment_detail_data) t;
 
   dbms_output.put_line(c_payment_create_discription||'. Статус: '||с_payment_create_status||'. Payment_id: '||v_payment_id||'.');
-  dbms_output.put_line(to_char(v_current_dtime,'dd.mm.yyyy hh24:mi:ss'));
+  dbms_output.put_line(to_char(p_payment_date,'dd.mm.yyyy hh24:mi:ss'));
 
   return v_payment_id;
 
