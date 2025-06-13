@@ -18,6 +18,11 @@
   c_payment_reason_is_null          constant varchar2(200 char) := 'Причина не может быть пустой.';
   c_payment_action_is_impossible    constant varchar2(200 char) := 'Невозможно выполнить операцию.';
   
+  c_error_code_invalid_input_parameter constant number(10) := -20101;
+  e_invalid_input_parameter exception;
+  
+  pragma exception_init(e_invalid_input_parameter, c_error_code_invalid_input_parameter);
+  
 /*Создание платежа.*/
 function create_payment( p_payment_from_client_id   payment.from_client_id%type
                                          , p_payment_to_client_id     payment.to_client_id%type

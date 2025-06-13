@@ -13,17 +13,18 @@ is
 begin
  if p_payment_detail_data is not empty then
     for i in p_payment_detail_data.first .. p_payment_detail_data.last loop
+      
       if p_payment_detail_data(i).field_id is null then
-        dbms_output.put_line(c_payment_error_id_is_null);
+        raise_application_error(c_error_code_invalid_input_parameter,c_payment_error_id_is_null);
       end if;
-
+      
       if p_payment_detail_data(i).field_value is null then
-        dbms_output.put_line(c_payment_error_value_is_null);
+        raise_application_error(c_error_code_invalid_input_parameter,c_payment_error_value_is_null);
       end if;
-
+      
     end loop;
   else
-    dbms_output.put_line(c_payment_collection_is_empty);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_collection_is_empty);
   end if;
 
   insert into payment
@@ -52,11 +53,11 @@ is
   v_current_dtime               date := sysdate;
 begin
   if p_payment_id is null then
-    dbms_output.put_line(c_payment_error_id_is_null);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_error_id_is_null);
   end if;
 
   if p_payment_error_reason is null then
-    dbms_output.put_line(c_payment_reason_is_null);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_reason_is_null);
   end if;
 
   update payment p
@@ -64,7 +65,7 @@ begin
   where p.payment_id = p_payment_id and p.status = с_payment_create_status;
   
   if sql%rowcount = 0 then
-    dbms_output.put_line(c_payment_action_is_impossible);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_action_is_impossible);
   else
     dbms_output.put_line(c_payment_error_discription||' Статус: '||с_payment_error_status||'. Причина: '||p_payment_error_reason||'. Payment_id: '||p_payment_id||'.');  
   end if;
@@ -80,11 +81,11 @@ is
   v_current_dtime                date := sysdate;
 begin
   if p_payment_id is null then
-    dbms_output.put_line(c_payment_error_id_is_null);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_error_id_is_null);
   end if;
 
   if p_payment_cancel_reason is null then
-    dbms_output.put_line(c_payment_reason_is_null);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_reason_is_null);
   end if;
 
   update payment p
@@ -92,7 +93,7 @@ begin
   where p.payment_id = p_payment_id and p.status = с_payment_create_status;
 
   if sql%rowcount = 0 then
-    dbms_output.put_line(c_payment_action_is_impossible);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_action_is_impossible);
   else 
     dbms_output.put_line(c_payment_cancel_discription||' Статус: '||с_payment_cancel_status||'. Причина: '||p_payment_cancel_reason||'. Payment_id: '||p_payment_id||'.');
   end if;
@@ -107,7 +108,7 @@ is
   v_current_dtime                 timestamp := systimestamp;
 begin
   if p_payment_id is null then
-    dbms_output.put_line(c_payment_error_id_is_null);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_error_id_is_null);
   end if;
 
   update payment p
@@ -115,7 +116,7 @@ begin
   where p.payment_id = p_payment_id and p.status = с_payment_create_status;
   
   if sql%rowcount = 0 then
-    dbms_output.put_line(c_payment_action_is_impossible);
+    raise_application_error(c_error_code_invalid_input_parameter,c_payment_action_is_impossible);
   else 
     dbms_output.put_line(c_payment_success_discription||'. Статус: '||c_payment_success_status||'. Payment_id: '||p_payment_id||'.');
   end if;

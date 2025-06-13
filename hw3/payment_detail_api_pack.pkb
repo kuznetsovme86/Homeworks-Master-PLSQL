@@ -14,15 +14,15 @@ begin
   if p_payment_detail_data is not empty then
     for i in p_payment_detail_data.first .. p_payment_detail_data.last loop
       if p_payment_detail_data(i).field_id is null then
-        dbms_output.put_line(payment_api_pack.c_payment_error_id_is_null);
+        raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter,payment_api_pack.c_payment_error_id_is_null);
       end if;
 
       if p_payment_detail_data(i).field_value is null then
-        dbms_output.put_line(payment_api_pack.c_payment_error_value_is_null);
+        raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter,payment_api_pack.c_payment_error_value_is_null);
       end if;
     end loop;
   else
-    dbms_output.put_line(payment_api_pack.c_payment_collection_is_empty);
+    raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter,payment_api_pack.c_payment_collection_is_empty);
   end if;
 
   merge into payment_detail p
@@ -55,7 +55,7 @@ begin
   end if;
 
   if p_delete_payment_filelds is empty or p_delete_payment_filelds is null then
-    dbms_output.put_line(payment_api_pack.c_payment_collection_is_empty);
+    raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter,payment_api_pack.c_payment_collection_is_empty);
   end if;
   
   dbms_output.put_line('Колличество удаляемых полей: '||p_delete_payment_filelds.count);
