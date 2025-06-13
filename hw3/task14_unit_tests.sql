@@ -120,15 +120,18 @@ end;
 
 --Тест "Cброс платежа в ошибочный статус"
 declare
-  v_payment_id                  payment.payment_id%type := 62;
+  v_payment_id                  payment.payment_id%type := 9999;
   v_payment_error_reason        payment.status_change_reason%type := 'недостаточно средств';
 begin
   payment_api_pack.fail_payment( p_payment_id           => v_payment_id
                                , p_payment_error_reason => v_payment_error_reason
                                );
+  raise_application_error(-20999, 'Unit-тест или API работают неккоректно');
+exception
+  when payment_api_pack.e_invalid_input_parameter then
+    dbms_output.put_line('Cброс платежа в ошибочный статус. Возбуждено исключение. Ошибка: '||sqlerrm);
 end;
 /
-
 -- Тест "Отмена платежа"
 declare
   v_payment_id                  payment.payment_id%type := 999;
